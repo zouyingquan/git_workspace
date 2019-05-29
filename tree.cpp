@@ -1,119 +1,138 @@
-#include<iostream>
-#include<string>
-#include<stack>
 
-template <class T>
+#include "pch.h"
+#include <iostream>
+#include <string>
+#include <stack>
+#include <stdio.h>
+
+
 struct TreeNode
 {
-	T data;
-	TreeNode<T> *left;
-	TreeNode<T> *right;
-	TreeNode(const T &x):data(x),left(NULL),right(NULL){}
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
-void Inoder(TreeNode<int> *root)
+
+
+void InorderPrint(TreeNode *root)
 {
-	if(root != NULL)
+	if (root != NULL)
 	{
-		Inoder(root->left);
-		std::cout<<root->data;
-		Inoder(root->right);
+		InorderPrint(root->left);
+		printf("%d ", root->val);
+		InorderPrint(root->right);
 	}
 }
 
-void Pre(TreeNode<int> *root)
+int maxDepth(TreeNode* root)
 {
-	if(root != NULL)
-	{
-		
-		std::cout<<root->data;
-		Pre(root->left);
-		Pre(root->right);
-	}
+	if (root == NULL)
+		return 0;
+	int leftMax = maxDepth(root->left);
+	int rightMax = maxDepth(root->right);
+
+	return leftMax > rightMax ? leftMax + 1 : rightMax + 1;
 }
 
-void print(TreeNode<int> *root)
-{
-	if(root != NULL)
-	{
-		print(root->left);
-		print(root->right);
-		std::cout<<root->data;
-	}
-}
+//Binary Search Tree
 
-void PreII(TreeNode<int> *root)
+void SearchBinary_Insert(TreeNode *root, TreeNode *node)
 {
-	if(root == NULL)
+	if (root == NULL)
+	{
+		root = node;
 		return;
-	using std::stack;
-	stack<TreeNode<int> *> s;
-	while(root != NULL || !s.empty())
+	}
+	printf("val = %d\n", node->val);
+	TreeNode *x = root;
+	TreeNode *pre = NULL;
+	while (x != NULL)
 	{
-		if(root != NULL)
+		pre = x;
+		if (x->val > node->val)
 		{
-			std::cout<<root->data;
+			x = x->left;
+		}
+		else
+			x = x->right;
+	}
+
+	if (node->val > pre->val)
+		pre->right = node;
+	else
+		pre->left = node;
+}
+
+void SearchBinary_Delet(TreeNode *root, TreeNode *node)
+{
+
+}
+
+bool isValidBST(TreeNode* root) 
+{
+	if (root == NULL)
+		return false;
+	using std::stack;
+	stack<TreeNode *> s;
+	int pre, cur,i = 0;
+	while (root != NULL || !s.empty())
+	{
+		if (root != NULL)
+		{
 			s.push(root);
 			root = root->left;
 		}
 		else
 		{
 			root = s.top();
+			cur = root->val;
 			s.pop();
 			root = root->right;
+			if (i == 0)
+			{
+				pre = cur;
+				i++;
+			}
+			else
+			{
+				if (pre > cur)
+					return false;
+				pre = cur;
+			}
+			
 		}
 	}
+	return true;
 }
 
-void InoderII(TreeNode<int> *root)
-{
-	if(root == NULL)
-		return;
-	using std::stack;
-	stack<TreeNode<int> *> s;
-	while(root != NULL || !s.empty())
-	{
-		if(root != NULL)
-		{
-			s.push(root);
-			root = root->left;
-		}
-		else
-		{
-			root = s.top();
-			std::cout<<root->data;
-			s.pop();
-			root = root->right;
-		}
-	}
-}
 
 
 int main()
 {
-	//      1
-	//   2     3
-	// 4   5 6   7
-	
-    TreeNode<int> *node1 = new TreeNode<int>(1);
-    TreeNode<int> *node2 = new TreeNode<int>(2);
-    TreeNode<int> *node3 = new TreeNode<int>(3);
-    TreeNode<int> *node4 = new TreeNode<int>(4);
-    TreeNode<int> *node5 = new TreeNode<int>(5);
-    TreeNode<int> *node6 = new TreeNode<int>(6);
-    TreeNode<int> *node7 = new TreeNode<int>(7);
-    node1->left  = node2;
-    node1->right = node3;
-    node2->left  = node4;
-    node2->right = node5;
-    node3->left  = node6;
-    node3->right = node7;
-	
-	InoderII(node1);
-	std::cout<<std::endl;
-	PreII(node1);
-	std::cout<<std::endl;
-	print(node1);
-	
+	//      2
+	//   1     3
+
+	TreeNode *node1 = new TreeNode(10);
+	TreeNode *node2 = new TreeNode(5);
+	TreeNode *node3 = new TreeNode(15);
+	TreeNode *test = NULL;
+	TreeNode *node4 = new TreeNode(4);
+	node1->left = node2;
+	node1->right = node3;
+
+	TreeNode *tmp = NULL;
+	for (int i = 7; i < 10; i++)
+	{
+		tmp = new TreeNode(i);
+		SearchBinary_Insert(node1, tmp);
+	}
+
+	printf("\n------------------\n");
+	InorderPrint(node1);
+	printf("\n%d\n", maxDepth(node1));
+	if (isValidBST(test))
+		printf("hahhaha\n");
 	return 0;
 }
