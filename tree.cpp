@@ -17,6 +17,15 @@ struct TreeNode
 	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
+void PostPrint(TreeNode *root)
+{
+	if(root != NULL)
+	{
+		PostPrint(root->left);
+		PostPrint(root->right);
+		printf("%d ",root->val);
+	}
+}
 
 //中序遍历
 void InorderPrint(TreeNode *root)
@@ -103,7 +112,7 @@ TreeNode* SearchBinary_Delet(TreeNode *root, int key)
 	{
 		cur = del->right;
 		//p_cur = del;
-		while (cur->left != NULL)
+		while (cur->left != NULL) //寻找del的后继节点
 		{
 			p_cur = cur;
 			cur = cur->left;
@@ -111,10 +120,7 @@ TreeNode* SearchBinary_Delet(TreeNode *root, int key)
 
 		printf("find %d\n", cur->val);
 
-		
-
-
-		if (p_cur != NULL)
+		if (p_cur != NULL)//不是根节点
 		{
 			if (cur == p_cur->left)
 				p_cur->left = cur->right;
@@ -280,7 +286,187 @@ void BreadthFirstSearch(TreeNode *root)
 }
 
 
+void PrintLevelOrder(vector<vector<int>> level)
+{
+	printf("{\n");
+	for(int i = 0;i < level.size();i++)
+	{
+		printf("	[ ");
+		for(int j = 0;j < level[i].size(); j++)
+		{
+			printf("%d ",level[i][j]);
+		}
+		printf("],\n");
+	}
+	printf("}\n");
+}
 
+//LeetCode 102. 二叉树的层次遍历
+vector<vector<int>> levelOrder(TreeNode* root) 
+{
+	if(root == NULL)
+		return vector<vector<int>>{};
+	
+	vector<vector<int>> ans;
+	vector<int> tmp;
+	queue<TreeNode*> q;
+	TreeNode *node = NULL;
+	int cnt = 1;
+	int count = 0;
+	q.push(root);
+	while(!q.empty())
+	{
+		cnt = q.size();
+		tmp.clear();
+		while(cnt > 0)
+		{
+			node = q.front();
+			tmp.push_back(node->val);
+			q.pop();
+			if(node->left)
+				q.push(node->left);
+			
+			if(node->right)
+				q.push(node->right);
+			cnt--;
+		}
+		node = NULL;
+		ans.push_back(tmp);
+	}
+	return ans;
+}
+
+//LeetCode 110.平衡二叉树 && 111.二叉树的最小深度
+bool isBalanced(TreeNode* root) 
+{
+	if(root == NULL)
+		return true;
+	
+	queue<TreeNode*> q;
+	TreeNode *node = NULL;
+	q.push(root);
+	int cnt = 0;
+	int height = 0;
+	int last = 0,cur = 0;
+	while(!q.empty())
+	{
+		cnt = q.size();
+		if(cnt > 0)
+		{
+			height++;
+			
+			while(cnt > 0)
+			{
+				node = q.front();
+				q.pop();
+				printf("%d\n",node->val);
+				if(node->left)
+					q.push(node->left);
+				if(node->right)
+					q.push(node->right);
+				if(node->left == NULL && node->right == NULL)//child node,mark height
+				{
+					cur = height;
+					//find first child
+					if(last == 0)
+						last = cur;
+					else
+					{
+						if(cur - last > 1)
+							return false;
+					}
+				}
+				cnt--;
+			}
+		}
+	}
+	return true;
+}
+
+void PrintVector(vector<int>& a)
+{
+	for(int i = 0; i < a.size();i++)
+	{
+		printf("%d ",a[i]);
+	}
+	printf("\n");
+}
+
+//LeetCode 105. 前序遍历和中序遍历构造二叉树
+TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) 
+{
+	if(preorder.empty() && inorder.empty())
+		return NULL;
+	int i = 0;
+	for(i = 0; i < inorder.size();i++)
+	{
+		if(inorder[i] == preorder[0])
+		{
+			break;
+		}
+	}
+	
+	TreeNode *root = new TreeNode(preorder[0]);
+	if( preorder.size() == 1)
+	{
+		return root;
+	}
+	
+	vector<int> lefts(inorder.begin(),inorder.begin()+i);
+	vector<int> rights(inorder.begin() + i + 1,inorder.end());
+	
+	int lefts_size = lefts.size();
+	int rights_size = preorder.size() - 1 - lefts_size;
+	vector<int> left_pre(preorder.begin()+1,preorder.begin()+1 + lefts_size);
+	vector<int> right_pre(preorder.begin()+1 + lefts_size,preorder.end());
+
+	
+	root->left = buildTree(left_pre,lefts);
+	root->right = buildTree(right_pre,rights);
+	
+	return root;
+}
+//LeetCode 106. 中序遍历和后序遍历构造二叉树
+TreeNode* buildTreeII(vector<int>& inorder, vector<int>& postorder) 
+{
+	if(postorder.empty() && inorder.empty())
+		return NULL;
+	int i = 0;
+	for(i = 0; i < inorder.size();i++)
+	{
+		if(inorder[i] == postorder[postorder.size()-1])
+		{
+			break;
+		}
+	}
+	
+	TreeNode *root = new TreeNode(postorder[postorder.size()-1]);
+	//printf("%d\n",root->val);
+	if( postorder.size() == 1)
+	{
+		return root;
+	}
+	
+	vector<int> lefts(inorder.begin(),inorder.begin()+i);
+	vector<int> rights(inorder.begin() + i + 1,inorder.end());
+	
+	
+	int lefts_size = lefts.size();
+	int rights_size = postorder.size() - 1 - lefts_size;
+	vector<int> left_post(postorder.begin(),postorder.begin()+lefts_size);
+	
+	vector<int> right_post(postorder.begin()+ lefts_size,postorder.end()-1);
+	//printf("----------hahaha-------\n");
+	//printf("right post:");
+	PrintVector(right_post);
+	
+	root->left = buildTreeII(lefts,left_post);
+	root->right = buildTreeII(rights,right_post);
+	
+	return root;
+}
+
+#if 0
 int main()
 {
 	//      10
@@ -294,6 +480,8 @@ int main()
 	node1->left = node2;
 	node1->right = node3;
 
+	vector<vector<int>> level;
+	
 	BreadthFirstSearch(node1);
 	TreeNode *tmp = NULL;
 
@@ -305,6 +493,10 @@ int main()
 
 	tmp = new TreeNode(7);
 	SearchBinary_Insert(node1, tmp);
+	
+	tmp = new TreeNode(8);
+	SearchBinary_Insert(node1, tmp);
+	
 
 	printf("\n------------------\n");
 	//InorderPrint(node1);
@@ -312,7 +504,8 @@ int main()
 	printf("\n%d\n", maxDepth(node1));
 
 	printf("\n------------------\n");
-	node1 = SearchBinary_Delet(node1, 5);
+	//node1 = SearchBinary_Delet(node1, 5);
+	
 
 	printf("\n------------------\n");
 
@@ -321,6 +514,25 @@ int main()
 
 	int i;
 
+	// 测试层次打印
+	level = levelOrder(node1);
+	printf("{\n");
+	for(int i = 0;i < level.size();i++)
+	{
+		printf("	[ ");
+		for(int j = 0;j < level[i].size(); j++)
+		{
+			printf("%d ",level[i][j]);
+		}
+		printf("],\n");
+	}
+	printf("}\n");
+	
+	if(isBalanced(node1))
+		printf("true\n");
+	else
+		printf("false\n");
+	
 	/*
 	while (scanf("%d", &i) != EOF)
 	{
@@ -334,9 +546,96 @@ int main()
 		}
 		ans.clear();
 		printf("%d\n", numTrees(i));
-
 	}
 	*/
 
 	return 0;
 }
+#else
+
+int main()
+{
+	#if 0
+	int pre[6] = {3,9,20,15,7};
+	int ord[6] = {9,3,15,20,7};
+	int post[6] = {9,15,7,20,3};
+	vector<int> preorder(pre,pre + 5);
+	vector<int> inorder(ord,ord + 5);
+	vector<int> postorder(post,post+5);
+	#else
+	int pre[9] = {5,3,2,1,4,6,8,7,9};
+	int ord[9] = {1,2,3,4,5,6,7,8,9};
+	int post[9] = {1,2,4,3,7,9,8,6,5};
+	vector<int> preorder(pre,pre + 9);
+	vector<int> inorder(ord,ord + 9);
+	vector<int> postorder(post,post+9);
+	#endif
+	
+	#if 1
+	TreeNode* rootII = buildTreeII(inorder,postorder);
+	TreeNode* root = buildTree(preorder,inorder);
+	vector<vector<int>> level;
+	vector<vector<int>> level_II;
+	
+	level = levelOrder(root);
+	level_II = levelOrder(rootII);
+	PrintLevelOrder(level);
+	
+	
+	printf("------\n");
+	PostPrint(root);
+	printf("------\n");
+	
+	
+	PrintLevelOrder(level_II);
+	#endif 
+
+	#if 0 
+	int i = 0;
+	for(i = 0; i < inorder.size();i++)
+	{
+		if(inorder[i] == preorder[0])
+		{
+			break;
+		}
+	}
+	vector<int> lefts(inorder.begin(),inorder.begin()+i);
+	vector<int> rights(inorder.begin() + i + 1,inorder.end());
+	
+	int lefts_size = lefts.size();
+	int rights_size = preorder.size() - 1 - lefts_size;
+	vector<int> left_pre(preorder.begin()+1,preorder.begin()+1 + lefts_size);
+	vector<int> right_pre(preorder.begin()+1 + lefts_size,preorder.end());
+	
+	if(!lefts.empty())
+	{
+		PrintVector(lefts);
+	}
+	if(!rights.empty())
+	{
+		PrintVector(rights);
+	}
+	
+	printf("---------------------\n");
+	if(!left_pre.empty())
+	{
+		PrintVector(left_pre);
+	}
+	if(!right_pre.empty())
+	{
+		PrintVector(right_pre);
+	}
+	
+	printf("\n");
+	#else
+	
+	// int lefts_size = 1;
+	// int rights_size = postorder.size() - 1 - lefts_size;
+	// vector<int> left_post(postorder.begin(),postorder.begin()+lefts_size);
+	
+	// vector<int> right_post(postorder.begin()+ lefts_size,postorder.end()-1);
+	// PrintVector(right_post);
+	#endif
+}
+
+#endif
