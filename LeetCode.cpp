@@ -263,6 +263,7 @@ void pmt(vector<int> &seq, int idx, vector<vector<int>> &res)
 	}
 }
 
+//LeetCode 46.全排列
 vector<vector<int>> permute(vector<int>& nums)
 {
 	vector<vector<int>> res;
@@ -359,7 +360,6 @@ void comb_backtrack(vector<int> &tmp, vector<int> candidates, vector<vector<int>
 
 	for (int i = pos; i < candidates.size(); i++)
 	{
-
 		printf("push %d,pre %d,target %d\n", candidates[i], target, target - candidates[i]);
 		if (target - candidates[i] < 0)
 			continue;
@@ -374,7 +374,8 @@ void comb_backtrack(vector<int> &tmp, vector<int> candidates, vector<vector<int>
 		tmp.push_back(candidates[i]);
 		comb_backtrack(tmp, candidates, ans, target - candidates[i], i);
 	}
-	tmp.pop_back();
+	if(!tmp.empty())
+		tmp.pop_back();
 }
 
 
@@ -427,13 +428,32 @@ int searchInsert(vector<int>& nums, int target)
 }
 
 
+//LeetCode 9. 回文数
+bool isPalindrome(int x) 
+{
+	if (x < 0)
+		return false;
+	int res = 0;
+	int tmp = x;
+	while (tmp > 0)
+	{
+		res = tmp % 10 + res * 10;
+		tmp = tmp / 10;
+	}
+	cout << res << endl;
+}
+
+
 int main()
 {
-	int arr[6] = { -1,0,1,2,-1,-4 };
-	vector<int> nums(arr, arr + 6);
-	vector<string> ans = generateParenthesis(10);
-	for (int i = 0; i < ans.size(); i++)
-		//printf("%s\n",ans[i]);
-		cout << ans[i] << endl;
+	int arr[1] = { 2 };
+	vector<int> nums(arr, arr + 1);
+
+	//vector<vector<int>> ans = combinationSum(nums,1);
+	//for (int i = 0; i < ans.size(); i++)
+	//	PrintVector(ans[i]);
+	isPalindrome(123);
+
+
 	return 0;
 }
