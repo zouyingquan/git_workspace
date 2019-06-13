@@ -6,9 +6,12 @@
 #include <vector>
 #include <queue>
 
+using std::cout;
+using std::endl;
+using std::string;
+using std::stack;
 using std::vector;
 using std::queue;
-
 struct TreeNode
 {
 	int val;
@@ -336,6 +339,12 @@ vector<vector<int>> levelOrder(TreeNode* root)
 	return ans;
 }
 
+//LeetCode 103. 二叉树的锯齿形层次遍历
+vector<vector<int>> zigzagLevelOrder(TreeNode* root) 
+{
+}
+
+
 //LeetCode 110.平衡二叉树 && 111.二叉树的最小深度
 bool isBalanced(TreeNode* root) 
 {
@@ -466,29 +475,78 @@ TreeNode* buildTreeII(vector<int>& inorder, vector<int>& postorder)
 	return root;
 }
 
+
+int CalcSum(vector<int> tmp)
+{
+	int sum = 0;
+	for (int i = 0; i < tmp.size(); i++)
+	{
+		sum += tmp[i];
+	}
+	return sum;
+}
+
+bool hasPathSum_backtrack(vector<int> &tmp,TreeNode* root, int sum,vector<vector<int>> &ans)
+{
+	int flag1 = false;
+	int flag2 = false;
+	if(root != NULL)
+	{
+		tmp.push_back(root->val);
+		if(root->left == NULL && root->right == NULL)
+		{
+			int s = CalcSum(tmp);
+			//PrintVector(tmp);
+			if(s == sum)
+				ans.push_back(tmp);
+		}
+		if(root->left != NULL)
+		{
+			hasPathSum_backtrack(tmp,root->left,sum,ans);
+		}
+		if(root->right != NULL)
+		{
+			hasPathSum_backtrack(tmp,root->right,sum,ans);
+		}
+		tmp.pop_back();
+		
+	}
+}
+
+//LeetCode 112 && 113.路径总和I、II
+bool hasPathSum(TreeNode* root, int sum)
+{
+	vector<int> tmp;
+	vector<vector<int>> ans;
+	hasPathSum_backtrack(tmp,root,sum,ans);
+	if(!ans.empty())
+	{
+		for(int i = 0; i < ans.size(); i++)
+			PrintVector(ans[i]);
+		return true;
+	}
+	else
+		return false;
+}
+
 #if 0
 int main()
 {
 	//      10
 	//   5     15
 
-	TreeNode *node1 = new TreeNode(5);
-	TreeNode *node2 = new TreeNode(3);
-	TreeNode *node3 = new TreeNode(6);
-	TreeNode *test = NULL;
-	TreeNode *node4 = new TreeNode(4);
-	node1->left = node2;
-	node1->right = node3;
-
+	TreeNode *root = new TreeNode(5);
+	
 	vector<vector<int>> level;
 	
 	BreadthFirstSearch(node1);
+	
 	TreeNode *tmp = NULL;
 
-	tmp = new TreeNode(2);
+	tmp = new TreeNode(4);
 	SearchBinary_Insert(node1, tmp);
 
-	tmp = new TreeNode(4);
+	tmp = new TreeNode(8);
 	SearchBinary_Insert(node1, tmp);
 
 	tmp = new TreeNode(7);
@@ -497,70 +555,18 @@ int main()
 	tmp = new TreeNode(8);
 	SearchBinary_Insert(node1, tmp);
 	
-
-	printf("\n------------------\n");
-	//InorderPrint(node1);
-	BreadthFirstSearch(node1);
-	printf("\n%d\n", maxDepth(node1));
-
-	printf("\n------------------\n");
-	//node1 = SearchBinary_Delet(node1, 5);
-	
-
-	printf("\n------------------\n");
-
-	BreadthFirstSearch(node1);
-	printf("\n%d\n", maxDepth(node1));
-
-	int i;
-
-	// 测试层次打印
-	level = levelOrder(node1);
-	printf("{\n");
-	for(int i = 0;i < level.size();i++)
-	{
-		printf("	[ ");
-		for(int j = 0;j < level[i].size(); j++)
-		{
-			printf("%d ",level[i][j]);
-		}
-		printf("],\n");
-	}
-	printf("}\n");
-	
-	if(isBalanced(node1))
-		printf("true\n");
-	else
-		printf("false\n");
-	
-	/*
-	while (scanf("%d", &i) != EOF)
-	{
-		vector<TreeNode*> ans;
-		ans = generateTrees(i);
-		printf("hahahah\n");
-		printf("creat %d\n", ans.size());
-		for (int i = 0; i < ans.size(); i++)
-		{
-			BreadthFirstSearch(ans[i]);
-		}
-		ans.clear();
-		printf("%d\n", numTrees(i));
-	}
-	*/
-
 	return 0;
 }
 #else
 
 int main()
 {
-	#if 0
-	int pre[6] = {3,9,20,15,7};
-	int ord[6] = {9,3,15,20,7};
+	#if 1
+	int pre[10] = {5,4,11,7,2,8,13,4,5,1};
+	int ord[10] = {7,11,2,4,5,13,8,5,4,1};
 	int post[6] = {9,15,7,20,3};
-	vector<int> preorder(pre,pre + 5);
-	vector<int> inorder(ord,ord + 5);
+	vector<int> preorder(pre,pre + 10);
+	vector<int> inorder(ord,ord + 10);
 	vector<int> postorder(post,post+5);
 	#else
 	int pre[9] = {5,3,2,1,4,6,8,7,9};
@@ -572,22 +578,23 @@ int main()
 	#endif
 	
 	#if 1
-	TreeNode* rootII = buildTreeII(inorder,postorder);
 	TreeNode* root = buildTree(preorder,inorder);
 	vector<vector<int>> level;
-	vector<vector<int>> level_II;
+	vector<vector<int>> levelII;
 	
 	level = levelOrder(root);
-	level_II = levelOrder(rootII);
 	PrintLevelOrder(level);
 	
+	// levelII = zigzagLevelOrder(root);
+	// PrintLevelOrder(levelII);
 	
-	printf("------\n");
-	PostPrint(root);
-	printf("------\n");
+	// printf("------\n");
+	// PostPrint(root);
+	// printf("------\n");
 	
+	// if(hasPathSum(root,22))
+		// cout<<"hahahah"<<endl;
 	
-	PrintLevelOrder(level_II);
 	#endif 
 
 	#if 0 
