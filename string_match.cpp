@@ -1,9 +1,10 @@
-include<iostream>
+#include<iostream>
 #include<stdio.h>
 #include<string>
 #include<vector>
 #include<stack>
 #include<map>
+
 using std::cin;
 using std::cout;
 using std::endl;
@@ -67,7 +68,7 @@ int main()
 	//int ans = Sunday(str,p);
 	//cout<<ans<<endl;
 	string T, P;
-    while(true) {
+    	while(true) {
         // 获取一行
         getline(cin, T);
         getline(cin, P);
