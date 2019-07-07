@@ -1,0 +1,67 @@
+红黑树插入操作
+
+LEFT_ROTATE(T,x)
+{
+	y = x.p.right;
+	x.right = y.left;
+	
+	if(y.left.p != NULL)
+		y.left.p = x;
+		
+	
+	y.p = x.p
+	
+	if(x.p == NULL)
+		T.root = y;
+	else if(x == x.p.left)
+		x.p.left = y;
+	else
+		x.p.right = y;
+		
+	y.left = x;
+	x.p = y;
+		
+}
+
+
+RBTree_inert(T,z)
+{
+	插入一个节点;
+	RBTree_insert_fix(T,z);//t旋转调整+变色处理
+}
+
+RBTree_insert_fix(T,z)
+{
+	while(z.p.color == red)
+	{
+		if(z.p.p = z.p.p.left)
+		{
+			y = z.p.p.right // 找到插入节点的叔叔节点
+			if(y.color == red)
+			{
+				y.color = black;
+				z.p.color = black;
+				z = z.p.p;
+			}
+			else if(z == z.p.right)
+			{
+				z = z.p;
+				LEFT_ROTATE(T,z);
+			}
+			else
+			{
+				z.p.color = black;
+				z.p.p.color = red;
+				RIGHT-ROTATE(T,z);
+			}
+		}
+		else
+		{
+			the same as;
+			left 和right 替换
+		}
+	}
+	T.root.color = black;
+}
+
+https://baijiahao.baidu.com/s?id=1610756759406088822&wfr=spider&for=pc
