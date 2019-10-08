@@ -444,6 +444,67 @@ bool isPalindrome(int x)
 }
 
 
+//LeetCode 62.不同路径
+int uniquePaths(int m, int n) 
+{
+	if(m <= 0 || n <= 0)
+		return 0;
+	
+	if(m == 1 || n == 1)
+		return 1;
+	
+	int dp[m][n];
+	
+	for(int i = 0; i < n ; i++)
+	{
+		for(int j = 0 ; j < m; j++)
+		{
+			if(i == 0)
+				dp[j][i] = 1;
+			else if(j == 0)
+				dp[j][i] = 1;
+			else
+				dp[j][i] = dp[j - 1][i] + dp[j][i - 1];
+			printf("dp[%d][%d] = %d\n",j,i,dp[j][i]);
+		}
+	}
+	return dp[m - 1][n - 1];
+}
+
+//LeetCode 63.不同的路径II
+int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid)
+{
+	int n = obstacleGrid.size();
+	int m = obstacleGrid[0].size();
+	printf("%d %d\n",m,n);
+	
+	if(m == 1 || n == 1)
+		return 1;
+	
+	int dp[m][n];
+	
+	for(int i = 0; i < n ; i++)
+	{
+		for(int j = 0 ; j < m; j++)
+		{
+			if(i == 0)
+				dp[j][i] = 1;
+			else if(j == 0)
+				dp[j][i] = 1;
+			else
+				dp[j][i] = dp[j - 1][i] + dp[j][i - 1];
+			
+			if(obstacleGrid[j][i] == 1)
+				dp[j][i] = 0;
+			
+			printf("dp[%d][%d] = %d\n",j,i,dp[j][i]);
+		}
+	}
+	return dp[m - 1][n - 1];
+	
+}
+
+
 int main()
 {
 	int arr[1] = { 2 };
