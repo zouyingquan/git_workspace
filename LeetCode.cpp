@@ -504,6 +504,34 @@ int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid)
 	
 }
 
+//LeetCode 64.最小路径和
+int minPathSum(vector<vector<int>>& grid) 
+{
+	int n = grid.size();
+	int m = grid[0].size();
+	printf("%d %d\n",m,n);
+	int dp[m][n];
+	dp[0][0] = grid[0][0];
+	for(int i = 0; i < n ; i++)
+	{
+		for(int j = 0 ; j < m; j++)
+		{
+			if(i == 0 && j > 0)
+				dp[j][i] = dp[j - 1][i] + grid[j][i];
+			if(j == 0 && i > 0)
+				dp[j][i] = dp[j][i - 1] + grid[j][i];
+			else
+			{
+				int tmp_min = (dp[j - 1][i] >= dp[j][i - 1])? dp[j][i - 1] : dp[j - 1][i] ;
+				dp[j][i] = tmp_min + grid[j][i];
+			}
+			
+			printf("dp[%d][%d] = %d\n",j,i,dp[j][i]);
+		}
+	}
+	return dp[m - 1][n - 1];
+	
+}
 
 int main()
 {
